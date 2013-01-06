@@ -1,0 +1,14 @@
+{
+  "name": "irc",
+  "description": "irc twitter bot",
+  "version": "0.1.0",
+  "author": "kazy111",
+  "dependencies": {
+    "coffee-script": "1.4.0",
+    "ntwitter": "~0.5.0",
+    "oauth": "0.9.8",
+    "hubot": "~2.3.4",
+    "hubot-irc": "~0.1.0"
+  },
+  "devDependencies": {}
+}
