@@ -51,6 +51,10 @@ runhubot.* を実行するだけ。
 2013/01/06 ver 0.1
 	初版
 
+2013/01/08 ver 0.1.1
+	Flood対策を導入
+	改行を含む発言は、スペースで結合するように変更
+
 
 ## 使用ライブラリ (node関係以外)
  * polygonplanet/Unzipper.js - GitHub
