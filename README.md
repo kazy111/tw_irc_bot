@@ -55,6 +55,9 @@ runhubot.* を実行するだけ。
 	Flood対策を導入
 	改行を含む発言は、スペースで結合するように変更
 
+2013/11/05 ver 0.1.2
+	前回発言からwaitより間隔が空いている場合、すぐ発言するように変更
+
 
 ## 使用ライブラリ (node関係以外)
  * polygonplanet/Unzipper.js - GitHub

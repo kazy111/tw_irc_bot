@@ -6,6 +6,7 @@ module.exports = (robot) ->
     twit = new twitter(config.tokens)
     twitStream = false
     buf = []
+    prevFlush = Date.now()
 
     if config.track == ''
         method = 'user'
@@ -30,6 +31,8 @@ module.exports = (robot) ->
 
     OutputBuffered = (header, text) ->
         buf.push(convert(header + text))
+        if Date.now() - prevFlush >= config.wait
+            FlushBuffer()
 
     FlushBuffer = () ->
         try
@@ -41,7 +44,11 @@ module.exports = (robot) ->
                 item = buf.shift()
                 len += item[1]
                 for i, room of process.env.HUBOT_IRC_ROOMS.split(",")
-                    (new robot.Response(robot, {user : {id : -1, name : room}, text : "none", done : false}, [])).send(item[0])
+                    if config.use_notice
+                        (new robot.Response(robot, {user : {id : -1, name : room}, text : "none", done : false}, [])).notice(item[0])
+                    else
+                        (new robot.Response(robot, {user : {id : -1, name : room}, text : "none", done : false}, [])).send(item[0])
+            prevFlush = Date.now()
         catch err
             console.error err
 
