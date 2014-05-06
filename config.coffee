@@ -13,7 +13,7 @@ module.exports = {
     # 空白の場合、認証ユーザのHome TLを表示し、検索語を入れると検索TLを流します。
     # ※Stream APIは日本語対応していないので、半角スペース区切りの単語しか検索できません
     # (ハッシュタグ等の単語前後に全角スペースがあるだけでひっかかりません)
-    track: 'twitter'
+    track: ''
 
     # favorite等のイベントを表示するか
     event_enable: false
@@ -26,5 +26,29 @@ module.exports = {
     # 頻繁にFlood Exceededでkickされるようなら数字を上げる。
     wait: 2500
 
-    debug: false
+    # 発言にnoticeを使う
+    use_notice: true
+    
+    # 発言する内容の条件
+    # 
+    # 発言ユーザ(Twitter ID)別に指定。マッチしない場合は default で判定。
+    # defaultがない、もしくは条件が空の場合は、判定せずに通します。
+    # また、条件が不正な場合も通します。
+    #
+    # 条件の複数指定は、演算子を用います。使える演算子は次の通り。
+    #   AND : &&
+    #   OR  : ||
+    #   NOT : !
+    #   括弧: ( )
+    #
+    # 演算子や単語の間には、必ず空白を入れて下さい。
+    #   ×  : hoge&&(piyo||fuga)
+    #   ○  : hoge && ( piyo || fuga )
+    filter: {
+      # kazy_dev の発言で、"ほげ" を含み、"ぴよ" を含まない
+      # kazy_dev: 'ほげ　&& ! ぴよ'
+      default : ''
+    }
+
+    debug: true
 }

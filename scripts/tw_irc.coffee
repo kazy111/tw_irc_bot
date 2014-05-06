@@ -60,9 +60,36 @@ module.exports = (robot) ->
 
     Output = (header, text) ->
         try
-            OutputBuffered header, text.replace /\n/g, ' '
+            OutputBuffered header, text.replace /[\n\r]/g, ' '
         catch err
             console.error 'error: ' + err
+
+
+    ConstructCondition = (filter) ->
+        result = filter.replace('　', ' ').split(' ').map (word) ->
+            if word in ['&&', '||', '!', '(', ')']
+                return word
+            else
+                return '(text.indexOf("' + word + '")>-1)'
+        return result.join(' ')
+
+    CheckText = (filter, text) ->
+        console.log filter if config.debug
+        console.log ConstructCondition(filter) if config.debug
+        return eval(ConstructCondition(filter))
+
+    CheckFilter = (data) ->
+        try
+            if config.filter[data.user.screen_name]?
+                return CheckText config.filter[data.user.screen_name], data.text
+            else if config.filter['default']?
+                return CheckText config.filter['default'], data.text
+            else
+                return true
+        catch err
+            console.log 'error occured parse filter ' + err
+            console.error 'error occured parse filter ' + err
+            return true
 
 
     StreamSearch = () ->
@@ -91,6 +118,8 @@ module.exports = (robot) ->
             stream.on 'end', (err) ->
                 console.error 'stream end'
                 console.error err if config.debug
+                if coeff <= 32
+                    setTimeout StreamSearch, coeff * 10 * 1000
 
             stream.on 'delete', (data) ->
                 console.error 'delete tweet' if config.debug
@@ -98,7 +127,7 @@ module.exports = (robot) ->
 
             stream.on 'data', (data) ->
                 try
-                    if data.text
+                    if data.text && CheckFilter data
                         Output data.user.screen_name + ': ', data.text
                     else if config.event_enable && data.event
                         text = data.source.screen_name
